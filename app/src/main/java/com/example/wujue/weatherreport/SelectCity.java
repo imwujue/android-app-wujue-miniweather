@@ -110,7 +110,6 @@ public class SelectCity extends Activity implements View.OnClickListener{
                         Log.d("myTest", newText);
                         Log.d("myTest", str);
                         if(str.contains(newText)||NametoPinYin.get(str).contains(newText)){
-
                             mSearchResult.add(str);
                             Log.d("myTest", mSearchResult.get(0));
                         }

@@ -1,17 +1,27 @@
 package com.example.wujue.weatherreport;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.wujue.app.MyApplication;
+import com.example.wujue.bean.City;
 import com.example.wujue.util.NetUtil;
 import com.example.wujue.bean.TodayWeather;
 
@@ -26,6 +36,8 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends Activity implements View.OnClickListener {
     private static final int UPDATE_TODAY_WEATHER =  1;
@@ -37,7 +49,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private ImageView weatherImg, pmImg;
 //    城市选择按钮
     private ImageView mCitySelect;
-
+//    定位按钮
+    private ImageView mlocationBtn;
 
 //  将解析的天气对象发送给主线程
     private Handler mHandler = new Handler(){
@@ -56,9 +69,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.weather_info);
-//        监听刷新按钮
-        mUpdateBtn = (ImageView)findViewById(R.id.title_update_btn);
-        mUpdateBtn.setOnClickListener(this);
 //         检查网络状态
         if(NetUtil.getNetworkState(this)!=NetUtil.NETWORK_NONE){
             Log.d("myWeather", "网络ok");
@@ -68,10 +78,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
             Log.d("myWeather", "网络error");
             Toast.makeText(MainActivity.this,"网络error",Toast.LENGTH_LONG).show();
         }
+//        监听刷新按钮
+        mUpdateBtn = (ImageView)findViewById(R.id.title_update_btn);
+        mUpdateBtn.setOnClickListener(this);
 //        监听城市选择按钮
         mCitySelect = (ImageView) findViewById(R.id.title_city_manager);
         mCitySelect.setOnClickListener(this);
-//        初始化界面
+//        监听定位按钮
+        mlocationBtn = (ImageView)findViewById(R.id.title_location);
+        mlocationBtn.setOnClickListener(this);
+//        初始化界面bnbn
         initView();
     }
 
@@ -96,6 +112,24 @@ public class MainActivity extends Activity implements View.OnClickListener {
         if(view.getId()==R.id.title_city_manager){
             Intent i = new Intent(this, SelectCity.class);
             startActivityForResult(i,1);
+        }
+
+//        点击城市定位按钮
+        if(view.getId()==R.id.title_location){
+            MyApplication app = (MyApplication)getApplication();
+            List<City> cityList = app.getCityList();
+            Context context = MainActivity.this;
+            LocationManager locationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
+            String currentCity = getCurrentLocation(locationManager,context);
+            if(currentCity == null){
+                return;
+            }
+            for(City city1:cityList){
+                if(city1.getCity().equals(currentCity)){
+                    String cityCode = city1.getNumber();
+                    queryWeatherCode(cityCode);
+                }
+            }
         }
     }
 
@@ -335,6 +369,43 @@ public class MainActivity extends Activity implements View.OnClickListener {
         Toast.makeText(MainActivity.this,"更新成功！",Toast.LENGTH_SHORT).show();
     }
 
+    private String getCurrentLocation(LocationManager locationManager,Context context){
+//        判断是否打开定位功能
+        if(ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context,Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
+            Log.d("location","!!!!!");
+            Toast.makeText(context,"打开程序定位权限",Toast.LENGTH_LONG).show();
+            return null;
+        }
+//        使用网络提供商提供的经纬度地址
+        Location currentLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        if (currentLocation == null){
+            Toast.makeText(context,"无法获取当前位置",Toast.LENGTH_LONG).show();
+            return null;
+        }
+        return getCityByLocation(currentLocation,context);
+    }
 
+    private String getCityByLocation(Location location, Context context){
+//        位置解析包
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        try{
+            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(),location.getLongitude(),1);
+            Log.d("location","!!!!!");
+            if(addresses.size() > 0){
+                Address address = addresses.get(0);
+                String city = address.getLocality();
+//                使用正则式除掉"市县乡州村"
+                Log.d("location",city);
+                city = city.replaceAll("([市县乡州村])","");
+                Log.d("location",city);
+                Toast.makeText(context,String.format("当前位置 %s", city), Toast.LENGTH_SHORT).show();
+                return city;
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
 
