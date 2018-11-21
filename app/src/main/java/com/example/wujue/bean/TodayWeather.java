@@ -116,8 +116,6 @@ public class TodayWeather {
     private String day2, high2, low2, climate2, wind2;
     private String day3, high3, low3, climate3, wind3;
     private String day4, high4, low4, climate4, wind4;
-    private String day5, high5, low5, climate5, wind5;
-    private String day6, high6, low6, climate6, wind6;
 
     public String getDay1(){
         return day1;
@@ -199,44 +197,84 @@ public class TodayWeather {
         return wind4;
     }
 
-    public String getDay5(){
-        return day5;
+    public void setDay1(String day1){
+        this.day1 = day1;
     }
 
-    public String getHigh5(){
-        return high5;
+    public void setHigh1(String high1){
+        this.high1 = high1;
     }
 
-    public String getLow5(){
-        return low5;
+    public void setLow1(String low1){
+        this.low1 = low1;
     }
 
-    public String getClimate5(){
-        return climate5;
+    public void setClimate1(String climate1){
+        this.climate1 = climate1;
     }
 
-    public String getWind5(){
-        return wind5;
+    public void setWind1(String wind1){
+        this.wind1 = wind1;
     }
 
-    public String getDay6(){
-        return day6;
+    public void setDay2(String day2){
+        this.day2 = day2;
     }
 
-    public String getHigh6(){
-        return high6;
+    public void setHigh2(String high2){
+        this.high2 = high2;
     }
 
-    public String getLow6(){
-        return low6;
+    public void setLow2(String low2){
+        this.low2 = low2;
     }
 
-    public String getClimate6(){
-        return climate6;
+    public void setClimate2(String climate2){
+        this.climate2 = climate2;
     }
 
-    public String getWind6(){
-        return wind6;
+    public void setWind2(String wind2){
+        this.wind2 = wind2;
+    }
+
+    public void setDay3(String day3){
+        this.day3 = day3;
+    }
+
+    public void setHigh3(String high3){
+        this.high3 = high3;
+    }
+
+    public void setLow3(String low3){
+        this.low3 = low3;
+    }
+
+    public void setClimate3(String climate3){
+        this.climate3 = climate3;
+    }
+
+    public void setWind3(String wind3){
+        this.wind3 = wind3;
+    }
+
+    public void setDay4(String day4){
+        this.day4 = day4;
+    }
+
+    public void setHigh4(String high4){
+        this.high4 = high4;
+    }
+
+    public void setLow4(String low4){
+        this.low4 = low4;
+    }
+
+    public void setClimate4(String climate4){
+        this.climate4 = climate4;
+    }
+
+    public void setWind4(String wind4){
+        this.wind4 = wind4;
     }
 
     @Override
@@ -254,6 +292,18 @@ public class TodayWeather {
                 ",high='" + high + '\'' +
                 ",low='" + low + '\'' +
                 ",type='" + type + '\'' +
-                '}';
+                '}'
+                +"Day1{"+"day1:"+day1+"," +
+                "temperature1:"+high1+"~"+low1+
+                ",wind1:"+wind1+",type1:"+climate1
+                +"Day2{"+"day2:"+day2+"," +
+                "temperature2:"+high2+"~"+low2+
+                ",wind2:"+wind2+",type2:"+climate2
+                +"Day3{"+"day3:"+day3+"," +
+                "temperature3:"+high3+"~"+low3+
+                ",wind3:"+wind3+",type3:"+climate3
+                +"Day4{"+"day4:"+day4+"," +
+                "temperature4:"+high4+"~"+low4+
+                ",wind4:"+wind4+",type4:"+climate4;
     }
 }

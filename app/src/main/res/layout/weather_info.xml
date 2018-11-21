@@ -161,6 +161,7 @@
             </LinearLayout>
             <!--今日天气信息块-->
             <RelativeLayout
+                android:id="@+id/todayweather"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -226,8 +227,10 @@
             <!--未来六天天气信息块-->
             <RelativeLayout
                 android:id="@+id/sixday"
+                android:layout_below="@id/todayweather"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
                 android:padding="10dp">
                 <!--展示滑动页面-->
                 <android.support.v4.view.ViewPager
@@ -241,8 +244,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="center"
-                    android:layout_alignParentBottom="true">
+                    android:layout_alignParentBottom="true"
+                    android:gravity="center">
                     <ImageView
                         android:id="@+id/dot1"
                         android:layout_width="wrap_content"
